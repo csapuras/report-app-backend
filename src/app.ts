@@ -17,4 +17,4 @@ app.use('/login', login)
 
 app.use(middleware.errorHandler)
 
-module.exports = app
+export default app;

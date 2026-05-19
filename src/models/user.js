@@ -1,4 +1,4 @@
-const config = require("../utils/config");
+const config = require("../config/config");
 const logger = require("../utils/logger");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);

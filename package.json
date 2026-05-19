@@ -5,10 +5,10 @@
   "license": "ISC",
   "author": "Valentia Lab",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "node --watch src/index.js",
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node --watch src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
