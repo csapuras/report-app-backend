@@ -1,6 +1,6 @@
 # report-app-backend
 
-ExpressJS + Mongoose
+ExpressJS + Mongoose + Typescript
 
 ### Environments
 1. test 
