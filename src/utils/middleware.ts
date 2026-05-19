@@ -1,14 +1,23 @@
-//const logger = require('./logger')
-const morgan = require('morgan')
-const responses = require('../constants/responses')
+import morgan from 'morgan'
+import responses from '../constants/responses'
+import { Request, Response, NextFunction } from 'express';
 
-morgan.token('body', function getBody (req) {
+interface TokenError {
+  name: string;
+  message: string;
+}
+
+interface AuthRequest extends Request {
+  token? : string | null
+}
+
+morgan.token('body', function getBody (req:Request) {
   return JSON.stringify(req.body)
 })
 
 const morganLogger = morgan(':method :url :status :res[content-length] - :response-time ms :body')
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error:TokenError, request:Request, response:Response, next:NextFunction) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: responses.ERR_ID_FORMAT })
   } else if (error.name === 'ValidationError') {
@@ -25,7 +34,7 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-const tokenExtractor = (request, response, next) => {
+const tokenExtractor = (request:AuthRequest, response:Response, next:NextFunction) => {
   request.token = null
   const authorization = request.get('authorization')
   if (authorization && authorization.startsWith('Bearer ')) {
@@ -36,7 +45,7 @@ const tokenExtractor = (request, response, next) => {
 }
 
 
-module.exports = {
+export default {
   morganLogger,
   errorHandler,
   tokenExtractor

@@ -1,6 +1,7 @@
-const config = require("..config/config");
-const logger = require("../utils/logger");
-const mongoose = require("mongoose");
+import config from '../config/config';
+import logger from '../utils/logger';
+import mongoose from 'mongoose'
+
 mongoose.set("strictQuery", false);
 
 const url = config.MONGODB_URI;
@@ -9,7 +10,23 @@ mongoose.connect(url).catch((error) => {
   logger.error("error connecting to MongoDB:", error.message);
 });
 
-const schema = mongoose.Schema({
+interface Report {
+  lat: string;
+  lng: string;
+  name: string;
+  contact: string;
+  municipality?: string;
+  brgy?: string;
+  address?: string;
+  details?: string;
+  date?: Date;
+  created_at?: Date;
+  id?: string;
+  _id?: string;
+  __v?: string;
+}
+
+const schema =new mongoose.Schema<Report>({
   lat: {
     type: String,
     required: true,    
@@ -51,9 +68,10 @@ const schema = mongoose.Schema({
 schema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
+    delete (returnedObject as any)._id;
     delete returnedObject.__v;
+    return returnedObject;
   },
 });
 
-module.exports = mongoose.model("Report", schema);
+export default mongoose.model("Report", schema);

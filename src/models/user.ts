@@ -1,6 +1,7 @@
-const config = require("../config/config");
-const logger = require("../utils/logger");
-const mongoose = require("mongoose");
+import config from '../config/config';
+import logger from '../utils/logger';
+import mongoose, {Schema} from 'mongoose'
+
 mongoose.set("strictQuery", false);
 
 const url = config.MONGODB_URI;
@@ -9,7 +10,15 @@ mongoose.connect(url).catch((error) => {
   logger.error("error connecting to MongoDB:", error.message);
 });
 
-const schema = mongoose.Schema({
+interface User {
+  username?: string | undefined;
+  passwordHash?: string | undefined;
+  id?: string;
+  _id?: string;
+  __v?: string;
+}
+
+const schema = new mongoose.Schema<User>({
   username: {
     type: String,
     unique: true,
@@ -25,10 +34,11 @@ const schema = mongoose.Schema({
 schema.set("toJSON", {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
+    delete (returnedObject as any)._id;
     delete returnedObject.__v;
     delete returnedObject.passwordHash;
   },
 });
 
-module.exports = mongoose.model("User", schema);
+
+export default mongoose.model("User", schema);

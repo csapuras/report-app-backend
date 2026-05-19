@@ -1,5 +1,6 @@
-const router = require("express").Router();
-const Model = require("../models/report");
+import express from 'express';
+import Model from '../models/report'
+const router = express.Router();
 
 router.get("/", async (request, response) => {
   const collection = await Model.find({});
@@ -34,4 +35,4 @@ router.post("/clean", async (request, response) => {
   response.json(200).end;
 });
 
-module.exports = router;
+export default router;

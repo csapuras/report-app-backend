@@ -4,7 +4,7 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
-
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "commonjs",
@@ -43,6 +43,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "src/index.js"],
+  "include": ["src/**/*", "src/index.ts"],
   "exclude": ["node_modules"]
 }

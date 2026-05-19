@@ -1,13 +1,15 @@
-const bcrypt = require("bcrypt");
-const router = require("express").Router();
-const Model = require("../models/user");
-const responses = require("../constants/responses");
+import express from 'express';
+import Model from '../models/user'
+import bcrypt from 'bcrypt'
+import responses from '../constants/responses'
+
+const router = express.Router();
 
 router.get("/", async (request, response) => {
   const collection = await Model.find({})
-    response.setHeader("X-Total-Count","10")
-    response.setHeader("Access-Control-Expose-Headers","Content-Range")
-    response.setHeader("Content-Range","bytes: 0-9/*")
+  response.setHeader("X-Total-Count","10")
+  response.setHeader("Access-Control-Expose-Headers","Content-Range")
+  response.setHeader("Content-Range","bytes: 0-9/*")
   response.json(collection);
 });
 
@@ -50,4 +52,4 @@ router.post("/clean", async (request, response) => {
   response.json(200).end;
 });
 
-module.exports = router;
+export default router;
