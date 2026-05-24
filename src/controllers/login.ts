@@ -1,7 +1,7 @@
 import config from '../config/config';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import User from '../models/report'
+import User from '../models/user'
 import express from 'express';
 import responses from '../constants/responses'
 

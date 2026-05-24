@@ -3,7 +3,7 @@ import Model from '../models/report'
 const router = express.Router();
 
 router.get("/", async (request, response) => {
-  const collection = await Model.find({});
+  const collection = await Model.find({}).sort({ created_at: -1 });
   response.setHeader("X-Total-Count","10")
   response.setHeader("Access-Control-Expose-Headers","Content-Range")
   response.setHeader("Content-Range","bytes: 0-9/*")

@@ -21,6 +21,7 @@ interface Report {
   details?: string;
   date?: Date;
   created_at?: Date;
+  status: string;
   id?: string;
   _id?: string;
   __v?: string;
@@ -54,6 +55,10 @@ const schema =new mongoose.Schema<Report>({
   }, 
   details: {
     type: String,
+  },
+  status: {
+    type: String,
+    default:"pending"
   },
   date: {
     type: Date,
