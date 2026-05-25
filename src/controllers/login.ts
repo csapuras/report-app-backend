@@ -8,9 +8,9 @@ import responses from '../constants/responses'
 const router = express.Router();
 
 interface User {
-  username?: string | undefined;
-  passwordHash?: string ;
-  access?: string;
+  username: string;
+  passwordHash: string;
+  access: string;
   id?: string;
   _id?: string;
   __v?: string;
@@ -19,18 +19,18 @@ interface User {
 router.post("/", async (request, response) => {
   const { username, password } = request.body;
   const user = await User.findOne<User>({ username });
-  const passwordCorrect =
-    user === null ? false : await bcrypt.compare(password, (user as any).passwordHash);
+  const encryptedPassword = user === null || user === undefined ? "" : user.passwordHash;
+  const passwordCorrect = bcrypt.compare(password, encryptedPassword);
 
-  if (!(user && passwordCorrect)) {
+  if (!passwordCorrect) {
     return response.status(401).json({
       error: responses.ERR_USER_PASSWORD_INVALID,
     });
   }
 
   const userForToken = {
-    username: user.username,
-    id: user._id,
+    username: user?.username,
+    id: user?._id,
   };
 
   const token = jwt.sign(userForToken, config.SECRET);
@@ -46,7 +46,7 @@ router.post("/", async (request, response) => {
 
   response
     .status(200)
-    .send({ token, username: user.username, access: user.access });
+    .send({ token, username: user?.username, access: user?.access });
 });
 
 export default router;
