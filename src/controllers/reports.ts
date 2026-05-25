@@ -30,6 +30,15 @@ router.post("/", async (request, response) => {
   response.status(201).json(savedItem).end();
 });
 
+router.patch("/:id",  async (request, response) => {
+  const id = request.params.id;
+  const body = request.body;
+  const result = await Model.findOneAndUpdate({ _id: { $eq: id } }, body, {
+    returnOriginal: false,
+  });
+  response.status(200).json(result);
+});
+
 router.post("/clean", async (request, response) => {
   await Model.deleteMany({});
   response.json(200).end;
