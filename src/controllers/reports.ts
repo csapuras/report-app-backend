@@ -3,11 +3,23 @@ import Model from '../models/report'
 const router = express.Router();
 
 router.get("/", async (request, response) => {
-  const collection = await Model.find({}).sort({ created_at: -1 });
+  const page = Number(request.query.page) || 1;
+  const limit = Number(request.query.limit) || 10;
+
+  const startIndex = (page - 1) * limit;
+  const total = await Model.countDocuments();
+
+  const collection = await Model.find().sort({ created_at: -1 }).skip(startIndex).limit(limit);
   response.setHeader("X-Total-Count","10")
   response.setHeader("Access-Control-Expose-Headers","Content-Range")
   response.setHeader("Content-Range","bytes: 0-9/*")
-  response.json(collection);
+  response.json({
+    page, 
+    limit, 
+    total, 
+    pages:Math.ceil(total / limit),
+    data:collection
+  });
 });
 
 router.get("/:id", async (request, response) => {
