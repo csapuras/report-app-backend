@@ -30,6 +30,13 @@ router.post("/", async (request, response) => {
   response.status(201).json(savedItem).end();
 });
 
+// Manual set reports to pending
+// For Testing only
+router.post("/to-pending", async (request, response) => {
+  await Model.updateMany({}, { $set: { status: 'pending' } });
+  response.status(201).json().end();
+});
+
 router.patch("/:id",  async (request, response) => {
   const id = request.params.id;
   const body = request.body;
