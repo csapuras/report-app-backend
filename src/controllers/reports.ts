@@ -1,8 +1,46 @@
 import express from 'express';
 import Model from '../models/report'
+import User from '../models/user'
+import { Request } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import config from '../config/config';
+import responses from '../constants/responses';
 const router = express.Router();
 
+
+interface DecodedToken extends JwtPayload {
+  id?: string;
+}
+
+function getToken(request:Request) {
+  const authHeader = request.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.split(' ')[1];
+  }
+  return null;
+}
+
 router.get("/", async (request, response) => {
+  if(config.ENV !== 'development'){
+    const token = getToken(request)
+
+    const decodedToken: DecodedToken | {} = jwt.verify(
+      token || "",
+      config.SECRET,
+    );
+
+    const userId = 'id' in decodedToken ? decodedToken.id : ""
+
+    const user = await User.findById(userId);
+
+      if (!user) {
+        return response
+          .status(400)
+          .json({ error: responses.ERR_USER_INVALID });
+      }
+  }
+  
+
   const page = Number(request.query.page) || 1;
   const limit = Number(request.query.limit) || 10;
 
@@ -50,6 +88,25 @@ router.post("/to-pending", async (request, response) => {
 });
 
 router.patch("/:id",  async (request, response) => {
+  if(config.ENV !== 'development'){
+    const token = getToken(request)
+
+    const decodedToken: DecodedToken | {} = jwt.verify(
+      token || "",
+      config.SECRET,
+    );
+
+    const userId = 'id' in decodedToken ? decodedToken.id : ""
+
+    const user = await User.findById(userId);
+
+      if (!user) {
+        return response
+          .status(400)
+          .json({ error: responses.ERR_USER_INVALID });
+      }
+  }
+
   const id = request.params.id;
   const body = request.body;
   const result = await Model.findOneAndUpdate({ _id: { $eq: id } }, body, {
