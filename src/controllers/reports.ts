@@ -88,24 +88,22 @@ router.post("/to-pending", async (request, response) => {
 });
 
 router.patch("/:id",  async (request, response) => {
-  if(config.ENV !== 'development'){
-    const token = getToken(request)
+  const token = getToken(request)
 
-    const decodedToken: DecodedToken | {} = jwt.verify(
-      token || "",
-      config.SECRET,
-    );
+  const decodedToken: DecodedToken | {} = jwt.verify(
+    token || "",
+    config.SECRET,
+  );
 
-    const userId = 'id' in decodedToken ? decodedToken.id : ""
+  const userId = 'id' in decodedToken ? decodedToken.id : ""
 
-    const user = await User.findById(userId);
+  const user = await User.findById(userId);
 
-      if (!user) {
-        return response
-          .status(400)
-          .json({ error: responses.ERR_USER_INVALID });
-      }
-  }
+    if (!user) {
+      return response
+        .status(400)
+        .json({ error: responses.ERR_USER_INVALID });
+    }
 
   const id = request.params.id;
   const body = request.body;
