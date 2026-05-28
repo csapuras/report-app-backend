@@ -43,11 +43,11 @@ router.get("/", async (request, response) => {
 
   const page = Number(request.query.page) || 1;
   const limit = Number(request.query.limit) || 10;
-
   const startIndex = (page - 1) * limit;
   const total = await Model.countDocuments();
+  const queryStatus = String(request.query.status).split(",");
 
-  const collection = await Model.find().sort({ created_at: -1 }).skip(startIndex).limit(limit);
+  const collection = await Model.find({ status: { $in: queryStatus } }).sort({ created_at: -1 }).skip(startIndex).limit(limit);
   response.setHeader("X-Total-Count","10")
   response.setHeader("Access-Control-Expose-Headers","Content-Range")
   response.setHeader("Content-Range","bytes: 0-9/*")
